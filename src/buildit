@@ -1,0 +1,80 @@
+#!/bin/bash
+
+
+
+# * link options
+#     -L${MKLROOT}/lib/intel64 -Wl,--no-as-needed
+#     -lmkl_intel_ilp64 -lmkl_sequential -lmkl_core
+#     -lpthread -lm -ldl
+
+# * compile options
+#     -DMKL_ILP64 -m64 -I${MKLROOT}/include
+
+MKLROOT=/devel/InstRoot/Intel/mkl
+
+LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${MKLROOT}/lib/intel64
+
+
+# Try a minimal link test using dgemm.
+
+g++ -o mkllinktest \
+  -L${MKLROOT}/lib/intel64 \
+  -lmkl_intel_ilp64 \
+  -lmkl_sequential \
+  -lmkl_core \
+  mkllinktest.cpp # &> /dev/null
+
+if [[ $? -eq 0 ]] ; then
+  echo "link check ok"
+else
+  echo "link check fail"
+  exit
+fi
+
+exit
+
+# Try a minimal header presence test.
+
+if [[ -e ${MKLROOT}/include/mkl.h ]] ; then
+  echo "presence check ok"
+else
+  echo "presence check fail"
+  exit
+fi
+
+# Try a minimal header compile test.
+
+g++ -o mklhdrtest \
+  -I${MKLROOT}/include \
+  mklhdrtest.cpp &> /dev/null
+
+if [[ $? -eq 0 ]] ; then
+  echo "compile check ok"
+else
+  echo "compile check fail"
+  exit
+fi
+
+# mkltest actually does something, computing a matrix multiplication with
+# dgemm.
+
+g++ -o mkltest \
+  -L${MKLROOT}/lib/intel64 -Wl,--no-as-needed \
+  -lmkl_intel_ilp64 -lmkl_sequential -lmkl_core \
+  -lpthread -lm -ldl \
+  -DMKL_ILP64 -m64 -I${MKLROOT}/include \
+  mkltest.cpp
+
+if [[ $? -eq 0 ]] ; then
+  echo "functional compile ok"
+else
+  echo "functional compile fail"
+  exit
+fi
+
+if mkltest &> /dev/null ; then
+  echo "functional run ok"
+else
+  echo "functional run fail"
+fi
+
