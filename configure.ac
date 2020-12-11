@@ -175,6 +175,12 @@ AC_COIN_CHK_LIB(MKL10,Mkl10Test,
   [],[],[],
   [dgemm],[#include "mkl.h"],yessep)
 
+# Just to check that default no works.
+
+AC_COIN_CHK_LIB(MKL11,Mkl11Test,
+  [],[],[],
+  [dgemm],[#include "mkl.h"],notog)
+
 ##############################################################################
 #                   Finishing up by writing all the output                   #
 ##############################################################################
