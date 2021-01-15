@@ -21,7 +21,7 @@ AM_LDFLAGS = $(LT_LDFLAGS)
 
 test: mkltest
 	MKLROOT=/devel/InstRoot/Intel/mkl ; \
-	LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${MKLROOT}/lib/intel64 ; \
+	LD_LIBRARY_PATH=$${LD_LIBRARY_PATH}:$${MKLROOT}/lib/intel64 ; \
 	export LD_LIBRARY_PATH ; \
 	mkltest
 
