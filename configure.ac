@@ -169,17 +169,27 @@ int main () {
 dgemm() ;
 return (0) ; }],[#include "mkl.h"],yessep)
 
-# This call will indicate failure for link and compile.
+# This call will indicate failure for link and compile because the necessary
+# lflags and cflags are not present.
 
 AC_COIN_CHK_LIB(MKL10,Mkl10Test,
   [],[],[],
-  [dgemm],[#include "mkl.h"],yessep)
+  [dgemm],[mkl.h],yessep)
 
-# Just to check that default no works.
+# Just to check that default do not use works. Would fail if forced because
+# of the notog spec, which just isn't appropriate from CHK_LIB.
 
 AC_COIN_CHK_LIB(MKL11,Mkl11Test,
   [],[],[],
-  [dgemm],[#include "mkl.h"],notog)
+  [dgemm],[mkl.h],notog)
+
+# Use this to test that command line flags override a default do not use.
+# Specifying just --with-mkl12 will fail. Specifying correct cflags or lflags
+# will pass compile or link, respectively.
+
+AC_COIN_CHK_LIB(MKL12,Mkl12Test,
+  [],[],[],
+  [dgemm],[mkl.h],no)
 
 ##############################################################################
 #                   Finishing up by writing all the output                   #
